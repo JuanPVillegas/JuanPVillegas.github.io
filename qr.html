@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qr pacientes</title>
+  <script type="text/javascript" src="js/instascan.min.js"></script>
+</head>
+
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #preview {
+      width: 100%;
+    }
+
+    .ehs-exit-btn {
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #ff4444;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 115px;
+      height: 50px;
+      z-index: 0;
+      margin: .5rem;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      border-radius: 10px;
+      font-family: Monospace;
+    }
+
+    .ehs-open-btn {
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #44ff60;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 115px;
+      height: 50px;
+      z-index: 0;
+      margin: .5rem;
+      color: black;
+      font-weight: bold;
+      font-size: 18px;
+      border-radius: 10px;
+      font-family: Monospace;
+    }
+  </style>
+  <video id="preview"></video>
+  <div onclick="gotoHome()" class="ehs-exit-btn">
+    Cerrar
+  </div>
+  <div id="open" onclick="openAct()" class="ehs-open-btn">
+    Abrir
+  </div>
+  <script type="text/javascript">
+    var resources = JSON.parse(localStorage.getItem("resources"));
+
+    if (resources == null || resources == '')
+      window.location.href = "./index.html";
+
+
+
+
+    var links = resources.filter(r => r.type === "link");
+    var openActividad = '';
+
+    document.getElementById('open').style.display = "none";
+
+    // element.style.display = 'none'; // Hide
+    // element.style.display = 'block'; // Show
+    // element.style.display = 'inline'; // Show
+    // element.style.display = 'inline-block'; // Show
+
+    let scanner = new Instascan.Scanner({
+      video: document.getElementById('preview')
+    });
+    scanner.addListener('scan', function (content) {
+      let dir = content.split(".com")[1] == undefined ?
+        content : content.split(".com")[1]; // se confirma si tiene ruta absoluta y se extrae su valor relativo
+
+      console.log("internal rute: " + content);
+
+      links.some(l => {
+        if (l.src.includes(dir)) {
+          console.log("open rute: " + l.src);
+          openActividad = l.src;
+          document.getElementById('open').style.display = "flex";
+        }
+      })
+    });
+    Instascan.Camera.getCameras().then(function (cameras) {
+      switch (cameras.length) {
+        case 2:
+          scanner.mirror = false;
+          scanner.start(cameras[1]);
+          break;
+        case 1:
+          scanner.mirror = false;
+          scanner.start(cameras[0]);
+          break;
+        case 3:
+          scanner.mirror = false;
+          scanner.start(cameras[2]);
+          break;
+        case 4:
+          scanner.mirror = false;
+          scanner.start(cameras[3]);
+          break;
+        case 5:
+          scanner.mirror = false;
+          scanner.start(cameras[4]);
+          break;
+        default:
+          console.error("No cameras found: length=" + cameras.length);
+      }
+    }).catch(function (e) {
+      console.error(e);
+    });
+
+    function gotoHome() {
+      window.location.href = "./index.html";
+    }
+
+    function openAct() {
+      if (openActividad != '')
+        window.open(openActividad);
+      else
+        console.log("Actividad no definida")
+
+      document.getElementById('open').style.display = "none";
+      openActividad = '';
+    }
+  </script>
+</body>
+
+</html>

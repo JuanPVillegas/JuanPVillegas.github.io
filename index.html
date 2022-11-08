@@ -12,7 +12,7 @@
 
     <meta name="theme-color" content="#2091F9">
 
-    <meta name="title" content="Aprende CSS desde cero">
+    <meta name="title" content="Life Handle">
     <meta name="description"
         content="Hola, Solo es un demo de Life Handle.">
 
@@ -58,7 +58,7 @@
             <h1 class="hero__title">La mejor opción a la emergencia medica</h1>
             <p class="hero__paragraph">El desarrollo innovador a la emergencia medica</p>
                            
-                <a href="#" class="cta">Escanear Codigo</a>
+            <button class ="cta" onclick="goTo('./qr.html')">Escanear Código</button>    
              
                
         </section>
@@ -272,6 +272,10 @@
     <script src="./js/questions.js"></script>
     <script src="./js/menu.js"></script>
 
+    <script>
+        function goTo(url){
+            window.location.href = url;
+        }
     </script>
 </body>
 
