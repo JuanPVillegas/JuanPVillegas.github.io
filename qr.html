@@ -68,16 +68,6 @@
     Abrir
   </div>
   <script type="text/javascript">
-    var resources = JSON.parse(localStorage.getItem("resources"));
-
-    if (resources == null || resources == '')
-      window.location.href = "./index.html";
-
-
-
-
-    var links = resources.filter(r => r.type === "link");
-    var openActividad = '';
 
     document.getElementById('open').style.display = "none";
 
@@ -90,18 +80,10 @@
       video: document.getElementById('preview')
     });
     scanner.addListener('scan', function (content) {
-      let dir = content.split(".com")[1] == undefined ?
-        content : content.split(".com")[1]; // se confirma si tiene ruta absoluta y se extrae su valor relativo
-
+      content : content // se obtiene la info dentro del qr
       console.log("internal rute: " + content);
+      irPaotrolado(content);
 
-      links.some(l => {
-        if (l.src.includes(dir)) {
-          console.log("open rute: " + l.src);
-          openActividad = l.src;
-          document.getElementById('open').style.display = "flex";
-        }
-      })
     });
     Instascan.Camera.getCameras().then(function (cameras) {
       switch (cameras.length) {
@@ -136,14 +118,8 @@
       window.location.href = "./index.html";
     }
 
-    function openAct() {
-      if (openActividad != '')
-        window.open(openActividad);
-      else
-        console.log("Actividad no definida")
-
-      document.getElementById('open').style.display = "none";
-      openActividad = '';
+    function irPaotrolado(url) {
+      window.location.href = url;
     }
   </script>
 </body>
